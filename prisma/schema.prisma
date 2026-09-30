@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Kandang {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  tipe      String
+  kapasitas Int
+  createdAt String
+  siklus    Siklus[]
+}
+
+model Siklus {
+  id                  Int           @id @default(autoincrement())
+  kandangId           Int
+  kandang             Kandang       @relation(fields: [kandangId], references: [id])
+  tanggalMulai        String
+  tanggalPanenRencana String?
+  populasiAwal        Int
+  status              String        @default("berjalan")
+  standar             String
+  createdAt           String
+  pakan               PakanHarian[]
+  mortalitas          Mortalitas[]
+  bobot               BobotSampel[]
+  peringatan          Peringatan[]
+}
+
+model PakanHarian {
+  id         Int    @id @default(autoincrement())
+  siklusId   Int
+  siklus     Siklus @relation(fields: [siklusId], references: [id])
+  tanggal    String
+  jenisPakan String
+  jumlahKg   Float
+}
+
+model Mortalitas {
+  id         Int     @id @default(autoincrement())
+  siklusId   Int
+  siklus     Siklus  @relation(fields: [siklusId], references: [id])
+  tanggal    String
+  jumlahEkor Int
+  penyebab   String?
+}
+
+model BobotSampel {
+  id            Int    @id @default(autoincrement())
+  siklusId      Int
+  siklus        Siklus @relation(fields: [siklusId], references: [id])
+  tanggal       String
+  jumlahSampel  Int
+  bobotRataGram Float
+}
+
+model Peringatan {
+  id        Int     @id @default(autoincrement())
+  siklusId  Int
+  siklus    Siklus  @relation(fields: [siklusId], references: [id])
+  tanggal   String
+  tipe      String
+  pesan     String
+  terbaca   Boolean @default(false)
+  createdAt String
+}
