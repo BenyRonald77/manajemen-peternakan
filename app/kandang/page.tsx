@@ -20,7 +20,9 @@ export default function KandangPage() {
   const [errMsg, setErrMsg] = useState("");
 
   const muat = () => fetch("/api/kandang").then((r) => r.json()).then(setRows);
-  useEffect(muat, []);
+  useEffect(() => {
+    muat();
+  }, []);
 
   const tambah = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -132,11 +132,14 @@ export default function DetailSiklus({ params }: { params: { id: string } }) {
       if (!byWeek.has(k)) byWeek.set(k, { bobot: [], pakan: 0 });
       byWeek.get(k)!.pakan += p.jumlahKg;
     }
-    for (const [label, v] of [...byWeek.entries()].sort()) {
+    const entries: { label: string; bobot: number[]; pakan: number }[] = [];
+    byWeek.forEach((v, label) => entries.push({ label, bobot: v.bobot, pakan: v.pakan }));
+    entries.sort((a, b) => a.label.localeCompare(b.label));
+    for (const e of entries) {
       minggu.push({
-        label,
-        bobot: v.bobot.length ? v.bobot.reduce((a, b) => a + b, 0) / v.bobot.length : null,
-        pakan: v.pakan,
+        label: e.label,
+        bobot: e.bobot.length ? e.bobot.reduce((a, b) => a + b, 0) / e.bobot.length : null,
+        pakan: e.pakan,
       });
     }
   }
